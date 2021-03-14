@@ -1,13 +1,11 @@
 #include "ui_handle.h"
-#include <TFT_eSPI.h>
-#include <SPI.h>
 #include "WiFi.h"
 #include <Wire.h>
 #include "esp_adc_cal.h"
 #include "power_control.h"
 #include "handle_input.h"
 #include "global_defines.h"
-
+#include "ui_handle.h"
 
 
 
@@ -19,10 +17,19 @@ void setup(){
   configure_pins();
 
 
+  //delay(1000);
+
 }
 
+long prev = 0;
 void loop(){
 
-handle_idling();
+if(millis() - prev > 50){
+  handle_idling();
+  handle_ui();
+  prev = millis();
+}
+
+delay(5);
 
 }

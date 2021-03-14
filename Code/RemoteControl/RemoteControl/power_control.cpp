@@ -4,7 +4,7 @@
 #include "global_defines.h"
 #include "ui_handle.h"
 
-long woke_up_at = 0;
+long woke_up_at = -100000;
 
 
 void configure_power_vontrol();
@@ -29,11 +29,21 @@ void configure_power_on(){
 
   Serial.println("going into light sleep");
   delay(10);
-  esp_sleep_enable_timer_wakeup(10000 * 1000);
+  //esp_sleep_enable_timer_wakeup(10000 * 1000);
   esp_sleep_enable_ext1_wakeup(BUTTON_PIN_BITMASK,ESP_EXT1_WAKEUP_ANY_HIGH);
   esp_light_sleep_start();
   if(digitalRead(SWITCH_PIN) == HIGH){
     open_menu();
+  }
+
+  if(digitalRead(ROTARY_A_PIN) == HIGH){
+
+    change_scene((int) MASTER_SET);
+    Serial.println("woke up from light sleep DUE TO ROTARY");
+  }
+
+  if(digitalRead(POWER_PIN) == HIGH){
+    Serial.println("woke up from light sleep DUE TO POWER_PIN");
   }
   woke_up_at = millis();
   Serial.println("woke up from light sleep");
