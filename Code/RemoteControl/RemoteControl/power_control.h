@@ -12,10 +12,10 @@ void configure_power_on();
 
 void handle_idling();
 
-
 long time_since_wakeup();
 
 void update_last_input();
 
+void check_wakeup();
 
 #endif

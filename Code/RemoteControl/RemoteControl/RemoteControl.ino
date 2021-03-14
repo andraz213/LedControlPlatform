@@ -1,3 +1,4 @@
+#include "ui_handle.h"
 #include <TFT_eSPI.h>
 #include <SPI.h>
 #include "WiFi.h"
@@ -5,7 +6,7 @@
 #include "esp_adc_cal.h"
 #include "power_control.h"
 #include "handle_input.h"
-
+#include "global_defines.h"
 
 
 
