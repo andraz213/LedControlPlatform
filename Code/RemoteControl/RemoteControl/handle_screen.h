@@ -3,7 +3,13 @@
 
 #include <Arduino.h>
 
+#define TFT_BL 4
+
 void init_screen();
+
+void turn_off_screen();
+
+void turn_on_screen();
 
 void draw_splash();
 

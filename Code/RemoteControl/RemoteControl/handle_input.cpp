@@ -97,7 +97,7 @@ int get_rotary(){
 
 
 void configure_pins(){
-  pinMode(ROTARY_B_PIN, INPUT_PULLDOWN);
+
   attachInterrupt(ROTARY_A_PIN, isr_rotary, RISING);
   attachInterrupt(SWITCH_PIN, isr_switch, RISING);
 

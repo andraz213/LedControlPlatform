@@ -22,6 +22,20 @@ void init_screen(){
 }
 
 
+void turn_off_screen() {
+
+  tft.writecommand(0x10); // Sleep (backlight still on ...)
+  digitalWrite(TFT_BL, LOW);
+  delay(5); // needed!
+}
+
+void turn_on_screen() {
+  tft.writecommand(0x11); // WAKEUP
+  delay(120); // needed! PWR neeeds to stabilize!
+  digitalWrite(TFT_BL, HIGH);
+}
+
+
 
 void draw_splash(){
   init_screen();
@@ -131,9 +145,11 @@ void draw_RGB(int r, int g, int b, int selected, bool changing){
     col += g * 256;
     col += mapped * 256 * 256;
 
-    for(int j = 0; j < 21; j++){
+    tft.drawLine(i, 90, i, 110, tft.color24to16((uint32_t)col));
+
+    /*for(int j = 0; j < 21; j++){
       tft.drawPixel(i, 90 + j, tft.color24to16((uint32_t)col));
-    }
+    }*/
 
 
     col = 0;
@@ -142,9 +158,11 @@ void draw_RGB(int r, int g, int b, int selected, bool changing){
     col += mapped * 256;
     col += r * 256 * 256;
 
-    for(int j = 0; j < 21; j++){
+    tft.drawLine(i, 130, i, 150, tft.color24to16((uint32_t)col));
+
+    /*for(int j = 0; j < 21; j++){
       tft.drawPixel(i, 130 + j, tft.color24to16((uint32_t)col));
-    }
+    }*/
 
     col = 0;
 
@@ -152,9 +170,11 @@ void draw_RGB(int r, int g, int b, int selected, bool changing){
     col += g * 256;
     col += r * 256 * 256;
 
-    for(int j = 0; j < 21; j++){
+    tft.drawLine(i, 170, i, 190, tft.color24to16((uint32_t)col));
+
+    /*for(int j = 0; j < 21; j++){
       tft.drawPixel(i, 170 + j, tft.color24to16((uint32_t)col));
-    }
+    }*/
 
 
   }

@@ -3,6 +3,7 @@
 #include "handle_input.h"
 #include "global_defines.h"
 #include "ui_handle.h"
+#include "handle_screen.h"
 
 long woke_up_at = -100000;
 
@@ -14,11 +15,12 @@ void configure_power_off(){
   // send off signal
 
   // turn off screen
+  turn_off_screen();
 
   Serial.println("going into deep sleep");
-  delay(1000);
+  delay(10);
   esp_sleep_enable_ext0_wakeup(GPIO_NUM_33,0);
-
+  //esp_sleep_enable_timer_wakeup(10000 * 1000);
   esp_deep_sleep_start();
 
 }
@@ -28,6 +30,7 @@ void configure_power_on(){
   // turn off screen
 
   Serial.println("going into light sleep");
+  turn_off_screen();
   delay(10);
   //esp_sleep_enable_timer_wakeup(10000 * 1000);
   esp_sleep_enable_ext1_wakeup(BUTTON_PIN_BITMASK,ESP_EXT1_WAKEUP_ANY_HIGH);
@@ -50,6 +53,9 @@ void configure_power_on(){
   check_input();
   check_wakeup();
 
+  turn_on_screen();
+
+  blackout_screen();
 
 
 }
