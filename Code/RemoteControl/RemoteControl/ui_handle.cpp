@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include "global_defines.h"
 #include "handle_input.h"
+#include "handle_wifi.h"
 
 #include "handle_screen.h"
 
@@ -13,7 +14,7 @@ const int num_items = 6;
 
 bool first_time = true;
 
-int master_value = 0;
+int master_value = 5;
 
 
 int inside_menu_item = 0;
@@ -235,6 +236,15 @@ void handle_RGB(int rot, bool sw){
 
     if(rot != 0 && inside_menu_item > 0 && inside_menu_item < 5 && selecting_menu_item){
       rgb_data[inside_menu_item - 1] += rot;
+
+      if(rgb_data[inside_menu_item - 1] > 255){
+        rgb_data[inside_menu_item - 1] = 255;
+      }
+
+      if(rgb_data[inside_menu_item - 1] < 0){
+        rgb_data[inside_menu_item - 1] = 0;
+      }
+
     }
 
     if(!selecting_menu_item && rot != 0){
@@ -275,6 +285,15 @@ void handle_fire(int rot, bool sw){
 
     if(rot != 0 && inside_menu_item > 0 && inside_menu_item < 4 && selecting_menu_item){
       fire_data[inside_menu_item - 1] += rot;
+
+      if(fire_data[inside_menu_item - 1] > 100){
+        fire_data[inside_menu_item - 1] = 100;
+      }
+
+      if(fire_data[inside_menu_item - 1] < 0){
+        fire_data[inside_menu_item - 1] = 0;
+      }
+
     }
 
     if(!selecting_menu_item && rot != 0){
@@ -311,6 +330,14 @@ void handle_stars(int rot, bool sw){
 
     if(rot != 0 && inside_menu_item > 0 && inside_menu_item < 4 && selecting_menu_item){
       stars_data[inside_menu_item - 1] += rot;
+
+      if(  stars_data[inside_menu_item - 1] > 100){
+          stars_data[inside_menu_item - 1] = 100;
+      }
+
+      if(  stars_data[inside_menu_item - 1] < 0){
+          stars_data[inside_menu_item - 1] = 0;
+      }
     }
 
     if(!selecting_menu_item && rot != 0){
@@ -345,6 +372,14 @@ void handle_sunset(int rot, bool sw){
 
     if(rot != 0 && inside_menu_item > 0 && inside_menu_item < 4 && selecting_menu_item){
       sunset_data[inside_menu_item - 1] += rot;
+
+      if(fire_data[inside_menu_item - 1] > 100){
+        sunset_data[inside_menu_item - 1] = 100;
+      }
+
+      if(fire_data[inside_menu_item - 1] < 0){
+        sunset_data[inside_menu_item - 1] = 0;
+      }
     }
 
     if(!selecting_menu_item && rot != 0){

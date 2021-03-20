@@ -9,6 +9,21 @@
 
 
 
+enum messages {
+  MASTER_MESSAGE,
+  OTHER_MESSAGE,
+  OFF_MESSAGE
+};
+
+
+enum other_modes {
+  WARM_WHITE_MODE,
+  RGB_MODE,
+  SUNSET_MODE,
+  STARS_MODE,
+  FIRE_MODE
+};
+
 
 
 #endif

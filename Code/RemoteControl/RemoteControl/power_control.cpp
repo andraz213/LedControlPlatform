@@ -4,6 +4,7 @@
 #include "global_defines.h"
 #include "ui_handle.h"
 #include "handle_screen.h"
+#include "handle_wifi.h"
 
 long woke_up_at = -100000;
 
@@ -13,6 +14,7 @@ void configure_power_vontrol();
 void configure_power_off(){
 
   // send off signal
+  send_off();
 
   // turn off screen
   turn_off_screen();
