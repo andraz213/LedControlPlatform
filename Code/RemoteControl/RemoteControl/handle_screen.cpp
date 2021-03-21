@@ -438,6 +438,35 @@ void draw_starrynight(int param1, int param2, int selected, bool changing){
 
 }
 
+
+
+
+void draw_kelvins(int kelvins){
+
+
+
+  init_screen();
+
+
+  tft.setRotation(0);
+  //tft.fillScreen(TFT_BLACK);
+  tft.setCursor(0, 0);
+  tft.setTextDatum(TL_DATUM);
+  tft.setTextSize(2);
+
+  int h = 20;
+  int w = 135;
+  tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00FFFFFF));
+  tft.fillRect(1, 101, map(kelvins, 20, 60, 0, 134), h - 2, tft.color24to16((uint32_t)0x00AAAAAA));
+  tft.fillRect(map(kelvins, 20, 60, 0, 134) + 1, 101, 133 - map(kelvins, 20, 60, 0, 134), h - 2, tft.color24to16((uint32_t)0x0000));
+
+
+  tft.drawString(String(kelvins * 100) + "K", 4, 77);
+
+
+
+}
+
 void draw_OTA(int phase){
   init_screen();
 }

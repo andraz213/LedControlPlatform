@@ -41,6 +41,8 @@ void handle_stars(int rot, bool sw);
 
 void handle_sunset(int rot, bool sw);
 
+void handle_kelvins(int rot, bool sw);
+
 void handle_ota(int rot, bool sw);
 
 #endif

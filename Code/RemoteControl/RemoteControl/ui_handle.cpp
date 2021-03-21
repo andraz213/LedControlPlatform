@@ -10,7 +10,7 @@ int current_scene = 0;
 
 int selected_menu_item = 0;
 
-const int num_items = 6;
+const int num_items = 7;
 
 bool first_time = true;
 
@@ -25,6 +25,7 @@ int rgb_data [3];
 int fire_data [2];
 int stars_data [2];
 int sunset_data [2];
+int kelvins = 27;
 
 menu_item menuItems[num_items] = {
   {"Master", &handle_RGB},
@@ -32,6 +33,7 @@ menu_item menuItems[num_items] = {
   {"Fire",  &handle_fire},
   {"Sunset",  &handle_sunset},
   {"Stars",  &handle_stars},
+  {"Kelvins",  &handle_kelvins},
   {"OTA",  &handle_ota}
 };
 
@@ -279,7 +281,7 @@ void handle_RGB(int rot, bool sw){
     master_value = (int)floor(((float)max / 255.0)*100.0);
 
     Serial.println(master_value);
-    send_other((int) RGB_MODE, rgb_data, 3);
+    send_other((int) RGB_MODE, rgb_data_to_send, 3);
     send_master(master_value);
 
 
@@ -427,6 +429,43 @@ void handle_sunset(int rot, bool sw){
 
 
 }
+
+
+void handle_kelvins(int rot, bool sw){
+
+  Serial.println("v sunset sem hjo");
+  if(rot != 0 || sw){
+    Serial.println("v sunset sem hsdjo");
+
+    if(sw){
+      change_scene((int) MENU);
+      return;
+    }
+
+
+
+    Serial.println(sw);
+
+    kelvins += rot;
+
+    if(kelvins < 20){
+      kelvins = 20;
+    }
+
+    if(kelvins > 60){
+      kelvins = 60;
+    }
+
+      draw_kelvins(kelvins);
+      send_other((int) TEMPERATURE_MODE, &kelvins, 1);
+      master_value = 50;
+      send_master(master_value);
+  }
+
+
+}
+
+
 
 void handle_ota(int rot, bool sw){
   change_scene((int) MENU);

@@ -29,7 +29,7 @@ void draw_OTA(int phase);
 
 void blackout_screen();
 
-
+void draw_kelvins(int kelvins);
 
 
 
