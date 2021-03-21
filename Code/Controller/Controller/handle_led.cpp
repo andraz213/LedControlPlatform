@@ -147,11 +147,10 @@ void calculate_next_step(){
     case (int) WARM_WHITE_MODE : calculate_warm_white(); break;
     case (int) RGB_MODE : calculate_rgb(); break;
     case (int) FIRE_MODE : calculate_fire(); break;
-    
-    /*case (int) SUNSET_MODE : break;
-    case (int) STARS_MODE : break;
+    case (int) TEMPERATURE_MODE : calculate_temp(); break;
+    case (int) STARS_MODE : calculate_stars(); break;
 
-    case (int) TEMPERATURE_MODE : break;*/
+    /*case (int) SUNSET_MODE : break;*/
 
 
   }
@@ -203,7 +202,7 @@ void calculate_fire(){
 
   if(millis() - prevupd > update_interval){
     prevupd = millis();
-    update_interval = random(150) + 50;
+    update_interval = random(fire_data[0]*5) + 50;
     for(int i = 0; i<240; i++){
       setNewColor(i);
       }
@@ -255,3 +254,155 @@ void calculate_fire(){
 
 
     }
+
+
+void calculate_temp(){
+  float red = 0.0;
+  float green = 0.0;
+  float blue = 0.0;
+  float temp = (float)kelvins;
+
+  red = 255;
+
+  green = temp;
+  green = 99.4708025861 * log(green) - 161.1195681661;
+
+
+  if( temp <= 19){
+
+    blue = 0;
+
+  } else {
+
+    blue = temp-10;
+    blue = 138.5177312231 * log(blue) - 305.0447927307;
+
+  }
+
+  if(red < 0){
+    red = 0;
+  }
+
+  if(red > 255){
+    red = 255;
+  }
+
+  if(green < 0){
+    green = 0;
+  }
+
+  if(green > 255){
+    green = 255;
+  }
+
+  if(blue < 0){
+    blue = 0;
+  }
+
+  if(blue > 255){
+    blue = 255;
+  }
+
+  for(int i = 0; i<240; i++){
+    raw_rgb[i][0] = red;
+    raw_rgb[i][1] = green;
+    raw_rgb[i][2] = blue;
+  }
+
+
+}
+
+
+const int num_stars = 3;
+// kje, kok bliz(močno), kok hitr, kera faza
+star_data stars[num_stars];
+
+long prev_stars = 0;
+
+bool first_stars = true;
+
+void calculate_stars(){
+
+  for(int i = 0; i<240; i++){
+    raw_rgb[i][0] = 0.0;
+    raw_rgb[i][1] = 0.0;
+    raw_rgb[i][2] = 0.0;
+  }
+
+  for(int i = 0; i<num_stars; i++){
+    if(stars[i].done == true || first_stars){
+      stars[i].done = false;
+      stars[i].position = random(30);
+      stars[i].distance = 400.0;
+      stars[i].initial_distance = stars[i].distance;
+      stars[i].speed = random(50 + stars_data[1]) + 10;
+      stars[i].strength = random(255);
+    }
+
+      Serial.println();
+      Serial.println();
+      Serial.println(stars[i].distance);
+      Serial.println(stars[i].position);
+      for(int j = 0; j<3; j++){
+
+        int rp = j*10;
+
+        float dist_to_star = abs(stars[i].distance)*abs(stars[i].distance);
+        Serial.print(j);
+        Serial.print(", ");
+        Serial.print(dist_to_star);
+        Serial.print(", ");
+
+        float brightness = stars[i].strength - (stars[i].strength * dist_to_star / pow(stars[i].initial_distance, 2)); //  map(dist_to_star, 0, 130, stars[i].strength, 0);// / dist_to_star;
+        brightness /= ((j*2)+1);
+        Serial.print(brightness);
+        Serial.println();
+        //Serial.println(brightness);
+        if(j == 0){
+          raw_rgb[stars[i].position][0] += brightness;
+          raw_rgb[stars[i].position][1] += brightness;
+          raw_rgb[stars[i].position][2] += brightness;
+        } else {
+
+          int pos = stars[i].position + j;
+          pos %= 240;
+
+          raw_rgb[pos][0] += brightness;
+          raw_rgb[pos][1] += brightness;
+          raw_rgb[pos][2] += brightness;
+
+          pos = stars[i].position - j + 240;
+          pos %= 240;
+
+          raw_rgb[pos][0] += brightness;
+          raw_rgb[pos][1] += brightness;
+          raw_rgb[pos][2] += brightness;
+
+        }
+
+        stars[i].distance -= stars[i].speed * (millis() - prev_stars) / 400.0;
+
+        if(stars[i].distance < -400){
+          stars[i].done = true;
+        }
+  }
+
+  Serial.println();
+  Serial.println();
+    }
+    prev_stars = millis();
+        first_stars = false;
+
+        for(int i = 0; i<240; i++){
+          int val = raw_rgb[i][0];
+          if(val> 255){
+            val = 255.0;
+          }
+          int calc = map(val*val, 0, 255*255, 0, 255);
+            raw_rgb[i][0] = calc;
+            raw_rgb[i][1] = calc;
+            raw_rgb[i][2] = calc;
+          }
+
+
+}

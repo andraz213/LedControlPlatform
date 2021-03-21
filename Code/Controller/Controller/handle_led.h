@@ -1,6 +1,16 @@
 #ifndef HANDLE_LED_H
 #define HANDLE_LED_H
 
+typedef struct {
+  bool done;
+  int position;
+  float distance;
+  float initial_distance;
+  float speed;
+  float strength;
+} star_data;
+
+
 bool init_led();
 
 void cycle_leds();
@@ -26,5 +36,9 @@ void calculate_rgb();
 void calculate_fire();
 
 void setNewColor(int pix);
+
+void calculate_temp();
+
+void calculate_stars();
 
 #endif
