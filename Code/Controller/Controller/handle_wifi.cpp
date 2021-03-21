@@ -6,6 +6,7 @@
 #include <esp_now.h>
 #include <WiFi.h>
 #include "global_defines.h"
+#include "handle_led.h"
 
 
 bool inited_wifi = false;
@@ -93,15 +94,19 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status){
 
 void handle_master(int val){
   Serial.println(val);
+  set_master(val);
 
 }
 
 
 void handle_other(int type, int * params, int n_params){
+  Serial.println(type);
   Serial.println("N_params" + String(n_params));
   for(int i = 0; i<n_params; i++){
     Serial.println("param N " + String(i)+": "+ String(params[i]));
   }
+
+  recieve_data(type, params, n_params);
 
 }
 

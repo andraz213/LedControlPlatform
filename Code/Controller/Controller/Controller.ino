@@ -3,7 +3,7 @@
 
 #include "global_defines.h"
 
-
+#include "handle_led.h"
 #include "handle_wifi.h"
 
 
@@ -16,15 +16,16 @@ void setup(){
 
 
   init_wifi();
+  init_led();
 
 }
 
-long prev = 0;
+
 void loop(){
 
 delay(5);
 
-
+cycle_leds();
 delay(5);
 
 }
