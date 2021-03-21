@@ -17,6 +17,7 @@ esp_now_peer_info_t peerInfo;
 
 
 void init_wifi(){
+
   if(!inited_wifi){
 
 
@@ -64,6 +65,7 @@ void send_master(int val){
 
   send_data(data, sizeof(int) * 2);
 
+  free(data);
 
 }
 
@@ -81,6 +83,7 @@ void send_other(int mode, int * params, int n_params){
   }
 
   send_data(data, sizeof(int) * size);
+  free(data);
 
 }
 
@@ -90,6 +93,7 @@ void send_off(){
   int type = (int) OFF_MESSAGE;
   memcpy(data, (char*)&type, (sizeof(int)));
   send_data(data, sizeof(int));
+  free(data);
 
 }
 
@@ -115,6 +119,7 @@ void turn_off_wifi(){
 
 
 void send_data(uint8_t * data, int size){
+  noInterrupts();
   setCpuFrequencyMhz(240);
   init_wifi();
   turn_on_wifi();
@@ -130,6 +135,7 @@ void send_data(uint8_t * data, int size){
   }
   turn_off_wifi();
   sent = false;
+  interrupts();
 }
 
 
@@ -143,5 +149,4 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len){
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status){
   sent = true;
   Serial.println("sended");
-  return;
 }

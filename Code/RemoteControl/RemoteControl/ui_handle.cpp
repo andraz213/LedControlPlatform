@@ -83,6 +83,7 @@ void handle_ui(){
 void menu_handler(){
   Serial.println("sm v menu");
   if((menu_input_handle() || first_time) && current_scene == (int) MENU){
+      setCpuFrequencyMhz(240);
     if(first_time){
       blackout_screen();
       first_time = false;
@@ -147,7 +148,7 @@ void master_set_handler(){
 
 int value_got = master_set_input_handle();
 if((value_got != 0 || first_time)  && current_scene == (int) MASTER_SET){
-
+    setCpuFrequencyMhz(240);
   if(first_time){
     blackout_screen();
   }
@@ -165,6 +166,8 @@ if((value_got != 0 || first_time)  && current_scene == (int) MASTER_SET){
 
 
   draw_master(master_value);
+
+  send_master(master_value);
 
 }
 
@@ -202,7 +205,7 @@ void handle_menu_item(){
 
 
   if(sw || rot != 0 || first_time){
-
+      setCpuFrequencyMhz(240);
     if(first_time){
       blackout_screen();
       rot = 1;
@@ -256,6 +259,28 @@ void handle_RGB(int rot, bool sw){
 
     draw_RGB(rgb_data[0], rgb_data[1], rgb_data[2], inside_menu_item, selecting_menu_item);
 
+    int rgb_data_to_send [3];
+
+    int max = 0;
+    float fact = 0.0;
+
+    for(int i = 0; i<3; i++){
+      if(rgb_data[i] > max){
+        max = rgb_data[i];
+      }
+    }
+
+    fact = (float) 255.0 / (float) max;
+
+    for(int i = 0; i<3; i++){
+      rgb_data_to_send[i] = (int)((float)rgb_data[i] * fact);
+    }
+
+    master_value = (int)floor(((float)max / 255.0)*100.0);
+
+    Serial.println(master_value);
+    send_other((int) RGB_MODE, rgb_data, 3);
+    send_master(master_value);
 
 
   }
@@ -303,6 +328,9 @@ void handle_fire(int rot, bool sw){
     }
 
       draw_fireplace(fire_data[0], fire_data[1], inside_menu_item, selecting_menu_item);
+      send_other((int) FIRE_MODE, fire_data, 2);
+      master_value = 50;
+      send_master(master_value);
   }
 
 
@@ -347,6 +375,9 @@ void handle_stars(int rot, bool sw){
     }
 
       draw_starrynight(stars_data[0], stars_data[1], inside_menu_item, selecting_menu_item);
+      send_other((int) STARS_MODE, stars_data, 2);
+      master_value = 50;
+      send_master(master_value);
   }
 
 
@@ -389,6 +420,9 @@ void handle_sunset(int rot, bool sw){
     }
 
       draw_sunset(sunset_data[0], sunset_data[1], inside_menu_item, selecting_menu_item);
+      send_other((int) SUNSET_MODE, sunset_data, 2);
+      master_value = 50;
+      send_master(master_value);
   }
 
 

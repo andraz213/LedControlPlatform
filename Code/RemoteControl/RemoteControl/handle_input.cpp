@@ -41,7 +41,7 @@ void IRAM_ATTR isr_rotary() {
       rotary_turned += dir;
 
       //Serial.println(mult);
-      Serial.println(dir);
+      //Serial.println(dir);
 
       update_last_input();
 
