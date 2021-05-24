@@ -22,7 +22,9 @@ enum other_modes {
   SUNSET_MODE,
   STARS_MODE,
   FIRE_MODE,
-  TEMPERATURE_MODE
+  TEMPERATURE_MODE,
+  TURBO_MODE,
+  OTA_MODE
 };
 
 

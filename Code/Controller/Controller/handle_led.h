@@ -41,4 +41,6 @@ void calculate_temp();
 
 void calculate_stars();
 
+void calculate_turbo();
+
 #endif

@@ -16,14 +16,15 @@ bool sent = false;
 uint8_t mac_address [6] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff} ;
 esp_now_peer_info_t peerInfo;
 
-
+int current_mode_wifi = 0;
 
 void init_wifi(){
 
   if(!inited_wifi){
 
     WiFi.mode(WIFI_STA);
-    int a = esp_wifi_set_protocol((wifi_interface_t) ESP_IF_WIFI_STA, WIFI_PROTOCOL_LR);
+    int a = esp_wifi_set_protocol((wifi_interface_t) ESP_IF_WIFI_STA, WIFI_PROTOCOL_11B| WIFI_PROTOCOL_11G|WIFI_PROTOCOL_11N);
+
     wifi_on = true;
 
     // Init ESP-NOW
@@ -67,7 +68,7 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len){
   if(type == (int) OTHER_MESSAGE){
     int other_type = 0;
     memcpy( &other_type, data, sizeof(int));
-
+    current_mode_wifi = other_type;
     datalen -= sizeof(int);
     handle_other(other_type, (int*)(data + sizeof(int)), datalen / sizeof(int));
     return;
@@ -111,7 +112,8 @@ void handle_other(int type, int * params, int n_params){
 }
 
 void handle_off(){
-
-
+  if(current_mode_wifi != (int)SUNSET_MODE){
+    handle_master(0);
+  }
 
 }

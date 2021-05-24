@@ -25,7 +25,9 @@ void draw_sunset(int param1, int param2, int selected, bool changing);
 
 void draw_starrynight(int param1, int param2, int selected, bool changing);
 
-void draw_OTA(int phase);
+void draw_OTA(int phase, String data, int perc);
+
+void draw_turbo();
 
 void blackout_screen();
 

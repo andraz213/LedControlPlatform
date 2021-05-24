@@ -25,6 +25,8 @@ void setup(){
 
   init_wifi();
 
+  //handle_idling();
+
   send_other((int)WARM_WHITE_MODE, (int *)NULL, 0);
   send_master(5);
 

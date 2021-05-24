@@ -12,7 +12,7 @@ bool inited = false;
 void init_screen(){
   if(!inited){
     tft.init();
-    tft.setRotation(0);
+    tft.setRotation(2);
     tft.fillScreen(TFT_BLACK);
     tft.setCursor(0, 0);
     tft.setTextDatum(MC_DATUM);
@@ -44,7 +44,7 @@ void draw_splash(){
 void draw_menu(String names[], int num, int selected, int battery_percentage){
   init_screen();
 
-  tft.setRotation(0);
+  tft.setRotation(2);
   //tft.fillScreen(TFT_BLACK);
   tft.setCursor(0, 0);
   tft.setTextDatum(TL_DATUM);
@@ -75,7 +75,7 @@ void draw_master(int value){
   init_screen();
 
 
-  tft.setRotation(0);
+  tft.setRotation(2);
   //tft.fillScreen(TFT_BLACK);
   tft.setCursor(0, 0);
   tft.setTextDatum(TL_DATUM);
@@ -93,7 +93,7 @@ void draw_master(int value){
 void draw_RGB(int r, int g, int b, int selected, bool changing){
   init_screen();
 
-  tft.setRotation(0);
+  tft.setRotation(2);
   //tft.fillScreen(TFT_BLACK);
   tft.setCursor(0, 0);
   tft.setTextDatum(TL_DATUM);
@@ -231,7 +231,7 @@ void draw_fireplace(int param1, int param2, int selected, bool changing){
   init_screen();
 
 
-    tft.setRotation(0);
+    tft.setRotation(2);
     //tft.fillScreen(TFT_BLACK);
     tft.setCursor(0, 0);
     tft.setTextDatum(TL_DATUM);
@@ -301,7 +301,7 @@ void draw_sunset(int param1, int param2, int selected, bool changing){
 
 
 
-      tft.setRotation(0);
+      tft.setRotation(2);
       //tft.fillScreen(TFT_BLACK);
       tft.setCursor(0, 0);
       tft.setTextDatum(TL_DATUM);
@@ -373,7 +373,7 @@ void draw_starrynight(int param1, int param2, int selected, bool changing){
 
 
 
-      tft.setRotation(0);
+      tft.setRotation(2);
       //tft.fillScreen(TFT_BLACK);
       tft.setCursor(0, 0);
       tft.setTextDatum(TL_DATUM);
@@ -439,6 +439,27 @@ void draw_starrynight(int param1, int param2, int selected, bool changing){
 }
 
 
+void draw_turbo(){
+
+
+    init_screen();
+
+
+    tft.setRotation(2);
+    //tft.fillScreen(TFT_BLACK);
+    tft.setCursor(0, 0);
+    tft.setTextDatum(TL_DATUM);
+    tft.setTextSize(2);
+
+      tft.drawString("Back", 4, 4);
+
+      tft.drawString("TURBO ACTIVE", 4, 50);
+
+      tft.setTextSize(1);
+      tft.drawString("Ne met predolg przgan,", 4, 80);
+      tft.drawString("ker je to turbo in je ", 4, 90);
+      tft.drawString("res sam premocno", 4, 100);
+}
 
 
 void draw_kelvins(int kelvins){
@@ -448,7 +469,7 @@ void draw_kelvins(int kelvins){
   init_screen();
 
 
-  tft.setRotation(0);
+  tft.setRotation(2);
   //tft.fillScreen(TFT_BLACK);
   tft.setCursor(0, 0);
   tft.setTextDatum(TL_DATUM);
@@ -467,8 +488,67 @@ void draw_kelvins(int kelvins){
 
 }
 
-void draw_OTA(int phase){
+void draw_OTA(int phase, String data, int perc){
   init_screen();
+  //tft.fillScreen(TFT_BLACK);
+  tft.setRotation(2);
+  //tft.fillScreen(TFT_BLACK);
+  tft.setCursor(0, 0);
+  tft.setTextDatum(TL_DATUM);
+  tft.setTextSize(1);
+
+  // connecting to wifi
+  if(phase == 0){
+      tft.fillScreen(TFT_BLACK);
+        tft.drawString("Back", 4, 4);
+        tft.drawString("Connecting to WiFi", 4, 105);
+        return;
+  }
+
+  if(phase == 1){
+    tft.fillScreen(TFT_BLACK);
+    tft.drawString("Back", 4, 4);
+    tft.drawString("Connected to WiFi", 4, 105);
+    tft.drawString("IP:" + data, 4, 120);
+    return;
+
+  }
+
+  tft.drawString("Back", 4, 4);
+
+  if(phase == 2){
+
+        tft.fillScreen(TFT_BLACK);
+        tft.drawString(data, 0, 105);
+        return;
+  }
+
+  if(phase == 3){
+
+        tft.drawString(data, 0, 85);
+
+        int h = 20;
+        int w = 135;
+        tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00FFFFFF));
+        tft.fillRect(1, 101, map(perc, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x00AAAAAA));
+        tft.fillRect(map(perc, 0, 100, 0, 134) + 1, 101, 133 - map(perc, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x0000));
+
+
+        return;
+  }
+
+/*
+  int h = 20;
+  int w = 135;
+  tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00FFFFFF));
+  tft.fillRect(1, 101, map(kelvins, 20, 60, 0, 134), h - 2, tft.color24to16((uint32_t)0x00AAAAAA));
+  tft.fillRect(map(kelvins, 20, 60, 0, 134) + 1, 101, 133 - map(kelvins, 20, 60, 0, 134), h - 2, tft.color24to16((uint32_t)0x0000));
+
+
+*/
+
+
+
 }
 
 

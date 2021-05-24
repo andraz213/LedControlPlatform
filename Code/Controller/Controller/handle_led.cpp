@@ -2,6 +2,7 @@
 #include <Adafruit_NeoPixel.h>
 #include "global_defines.h"
 #include <Arduino.h>
+#include "handle_ota.h"
 
 #define PIN        14
 
@@ -39,14 +40,28 @@ bool init_led(){
     return led_inited;
 }
 
+
+long prev_cycle = 0;
 void cycle_leds(){
+
+  Serial.println(1000 / (millis() - prev_cycle));
+
+  prev_cycle = millis();
   calculate_next_step();
 
-  if(current_mode != (int) WARM_WHITE_MODE){
+  if(current_mode != (int) WARM_WHITE_MODE && current_mode != (int) OTA_MODE ){
     apply_master();
     apply_rgbw_correction();
   }
+
+  if(current_mode == (int) TURBO_MODE){
+    calculate_turbo();
+  }
   display();
+
+  if(current_mode == (int) OTA_MODE ){
+    do_ota(0, false);
+  }
 }
 
 void recieve_data(int type, int * params, int n_params){
@@ -83,6 +98,10 @@ void recieve_data(int type, int * params, int n_params){
 
   if(type == (int) TEMPERATURE_MODE){
     kelvins = params[0];
+  }
+
+  if(type == (int) OTA_MODE){
+    Serial.println("ota");
   }
 
 }
@@ -133,12 +152,19 @@ void apply_rgbw_correction(){
 }
 
 void display(){
+  int avg = 0;
   if(init_led()){
+    Serial.print("brightness: ");
+    Serial.println(pixels.getBrightness());
     for(int i = 0; i<240; i++){
       pixels.setPixelColor(i, pixels.Color(to_display_rgbw[i][0], to_display_rgbw[i][1], to_display_rgbw[i][2], to_display_rgbw[i][3]));
+      avg += to_display_rgbw[i][0] + to_display_rgbw[i][1] + to_display_rgbw[i][2] + to_display_rgbw[i][3];
     }
     pixels.show();
   }
+
+  Serial.print("AVG: ");
+  Serial.println( avg / 960);
 }
 
 void calculate_next_step(){
@@ -149,15 +175,9 @@ void calculate_next_step(){
     case (int) FIRE_MODE : calculate_fire(); break;
     case (int) TEMPERATURE_MODE : calculate_temp(); break;
     case (int) STARS_MODE : calculate_stars(); break;
-
+    case (int) OTA_MODE : calculate_warm_white(); set_master(10); break;
     /*case (int) SUNSET_MODE : break;*/
-
-
   }
-
-
-
-
 }
 
 void reset_data(){
@@ -202,7 +222,7 @@ void calculate_fire(){
 
   if(millis() - prevupd > update_interval){
     prevupd = millis();
-    update_interval = random(fire_data[0]*5) + 50;
+    update_interval = random((100 - fire_data[0])*10) + 50;
     for(int i = 0; i<240; i++){
       setNewColor(i);
       }
@@ -233,24 +253,27 @@ void calculate_fire(){
       int g = 0;
       int b = 0;
 
+      int plus_g = map(fire_data[1], 0, 100, 35, 0);
+      int plus_b = map(fire_data[1], 0, 100, 10, 0);
+
       int r = map(n, 0, 1023, 0, 130);
       if (n > 200)
-        g = map(n, 200, 1023, 0, 25);
+        g = map(n, 200, 1023, 0, plus_g);
       // g = map(n * n, 100 * 100, 1023 * 1023, 0, 255);
       if (n > 755)
-        b = map(n, 755, 1023, 0, 3);
+        b = map(n, 755, 1023, 0, plus_b);
 
         if(pix%2 == 0){
         r = 50;
-        g = 15;
-        b = 2;
+        g = 10 + plus_g*0.3;
+        b = 2 + plus_b*0.1;
         }
       prev[pix][0] = current[pix][0];
       prev[pix][1] = current[pix][1];
       prev[pix][2] = current[pix][2];
-      next[pix][0] = r;
-      next[pix][1] = g;
-      next[pix][2] = b;
+      next[pix][0] = map(r, 0, 130, 0, 255);
+      next[pix][1] = map(g, 0, 130, 0, 255);
+      next[pix][2] = map(b, 0, 130, 0, 255);
 
 
     }
@@ -313,7 +336,7 @@ void calculate_temp(){
 }
 
 
-const int num_stars = 3;
+const int num_stars = 24;
 // kje, kok bliz(močno), kok hitr, kera faza
 star_data stars[num_stars];
 
@@ -329,35 +352,33 @@ void calculate_stars(){
     raw_rgb[i][2] = 0.0;
   }
 
-  for(int i = 0; i<num_stars; i++){
+  int calc_num = num_stars * stars_data[0] / 100;
+
+  if(first_stars){
+    calc_num = num_stars;
+  }
+
+  for(int i = 0; i<calc_num; i++){
     if(stars[i].done == true || first_stars){
       stars[i].done = false;
-      stars[i].position = random(30);
+      stars[i].position = random(240);
       stars[i].distance = 400.0;
       stars[i].initial_distance = stars[i].distance;
       stars[i].speed = random(50 + stars_data[1]) + 10;
       stars[i].strength = random(255);
     }
 
-      Serial.println();
-      Serial.println();
-      Serial.println(stars[i].distance);
-      Serial.println(stars[i].position);
+
       for(int j = 0; j<3; j++){
 
         int rp = j*10;
 
         float dist_to_star = abs(stars[i].distance)*abs(stars[i].distance);
-        Serial.print(j);
-        Serial.print(", ");
-        Serial.print(dist_to_star);
-        Serial.print(", ");
+
 
         float brightness = stars[i].strength - (stars[i].strength * dist_to_star / pow(stars[i].initial_distance, 2)); //  map(dist_to_star, 0, 130, stars[i].strength, 0);// / dist_to_star;
         brightness /= ((j*2)+1);
-        Serial.print(brightness);
-        Serial.println();
-        //Serial.println(brightness);
+
         if(j == 0){
           raw_rgb[stars[i].position][0] += brightness;
           raw_rgb[stars[i].position][1] += brightness;
@@ -387,8 +408,7 @@ void calculate_stars(){
         }
   }
 
-  Serial.println();
-  Serial.println();
+
     }
     prev_stars = millis();
         first_stars = false;
@@ -401,8 +421,23 @@ void calculate_stars(){
           int calc = map(val*val, 0, 255*255, 0, 255);
             raw_rgb[i][0] = calc;
             raw_rgb[i][1] = calc;
-            raw_rgb[i][2] = calc;
+            raw_rgb[i][2] = calc * 0.8;
           }
 
 
+}
+
+
+
+
+void calculate_turbo(){
+  int val = map(master * master, 0, 100 * 100, 0, 220);
+  int b = map(master * master, 0, 100 * 100, 0, 200);
+  int ww = map(master * master, 0, 100 * 100, 0, 255);
+  for(int i = 0; i<240; i++){
+    to_display_rgbw[i][0] = (int)val;
+    to_display_rgbw[i][1] = (int)val;
+    to_display_rgbw[i][2] = (int)b;
+    to_display_rgbw[i][3] = (int)ww;
+  }
 }

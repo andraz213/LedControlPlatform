@@ -3,14 +3,14 @@
 #include "global_defines.h"
 #include "handle_input.h"
 #include "handle_wifi.h"
-
+#include "handle_ota.h"
 #include "handle_screen.h"
 
 int current_scene = 0;
 
 int selected_menu_item = 0;
 
-const int num_items = 7;
+const int num_items = 8;
 
 bool first_time = true;
 
@@ -21,9 +21,9 @@ int inside_menu_item = 0;
 bool selecting_menu_item = false;
 
 
-int rgb_data [3];
-int fire_data [2];
-int stars_data [2];
+int rgb_data [3] = {20, 20, 20};
+int fire_data [2] = {50, 50};
+int stars_data [2] = {50, 50};
 int sunset_data [2];
 int kelvins = 27;
 
@@ -34,7 +34,8 @@ menu_item menuItems[num_items] = {
   {"Sunset",  &handle_sunset},
   {"Stars",  &handle_stars},
   {"Kelvins",  &handle_kelvins},
-  {"OTA",  &handle_ota}
+  {"TURBO",  &handle_turbo},
+  {"OTA",  &do_ota}
 };
 
 
@@ -464,6 +465,31 @@ void handle_kelvins(int rot, bool sw){
 
 
 }
+
+
+
+void handle_turbo(int rot, bool sw){
+
+  int fake = 0;
+  Serial.println("v sunset sem hjo");
+  if(rot != 0 || sw){
+    Serial.println("v sunset sem hsdjo");
+
+    if(sw){
+      change_scene((int) MENU);
+      return;
+    }
+
+      Serial.println(sw);
+      draw_turbo();
+      send_other((int) TURBO_MODE, &fake, 0);
+      master_value = 50;
+      send_master(master_value);
+  }
+
+
+}
+
 
 
 

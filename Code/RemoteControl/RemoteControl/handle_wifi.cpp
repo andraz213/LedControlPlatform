@@ -23,7 +23,8 @@ void init_wifi(){
 
     WiFi.mode(WIFI_STA);
 
-    int a = esp_wifi_set_protocol((wifi_interface_t) ESP_IF_WIFI_STA, WIFI_PROTOCOL_LR);
+    int a = esp_wifi_set_protocol((wifi_interface_t) ESP_IF_WIFI_STA, WIFI_PROTOCOL_11B| WIFI_PROTOCOL_11G|WIFI_PROTOCOL_11N);
+
     //esp_wifi_set_channel(4, WIFI_SECOND_CHAN_NONE);
     wifi_on = true;
 

@@ -17,7 +17,7 @@ void IRAM_ATTR isr_rotary() {
   if(millis() - prev_rotary > 20){
     prev_rotary = millis();
     if(digitalRead(ROTARY_A_PIN) == HIGH){
-      if(digitalRead(ROTARY_B_PIN) == HIGH){
+      if(digitalRead(ROTARY_B_PIN) == LOW){
         dir--;
       } else {
         dir++;
