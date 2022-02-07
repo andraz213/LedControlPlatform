@@ -16,8 +16,6 @@ bool first_time = true;
 
 int master_value = 5;
 
-bool changing_parameters = false;
-
 
 int inside_menu_item = 0;
 bool selecting_menu_item = false;
@@ -41,7 +39,7 @@ menu_item menuItems[num_items] = {
 };
 
 
-void change_scene(int scene){
+void change_scene(int scene) {
   blackout_screen();
   current_scene = scene;
   check_switch();
@@ -54,7 +52,7 @@ void change_scene(int scene){
   blackout_screen();
 }
 
-void open_menu(){
+void open_menu() {
   change_scene((int)MENU);
   selected_menu_item = 0;
   Serial.println("em v meniju");
@@ -66,11 +64,11 @@ void open_menu(){
 
 
 
-void handle_ui(){
+void handle_ui() {
 
   //Serial.println(current_scene);
 
-  switch(current_scene){
+  switch (current_scene) {
     case MASTER_SET : master_set_handler(); break;
     case MENU : menu_handler(); break;
     case MENU_ITEM : handle_menu_item(); break;
@@ -85,19 +83,19 @@ void handle_ui(){
 
 
 
-void menu_handler(){
+void menu_handler() {
   Serial.println("sm v menu");
-  changing_parameters = false;
-  if((menu_input_handle() || first_time) && current_scene == (int) MENU){
-      setCpuFrequencyMhz(240);
-    if(first_time){
+  set_changing_parameters(false);
+  if ((menu_input_handle() || first_time) && current_scene == (int) MENU) {
+    setCpuFrequencyMhz(240);
+    if (first_time) {
       blackout_screen();
       first_time = false;
     }
     Serial.println("change");
     String names[num_items];
 
-    for(int i = 0; i< num_items; i++){
+    for (int i = 0; i < num_items; i++) {
       names[i] = String(menuItems[i].display_name);
     }
 
@@ -111,14 +109,14 @@ void menu_handler(){
 
 
 
-bool menu_input_handle(){
+bool menu_input_handle() {
 
   bool changed = false;
 
-  changing_parameters = false;
+  set_changing_parameters(false);
 
-  if(check_switch()){
-    if(selected_menu_item == MASTER_SET){
+  if (check_switch()) {
+    if (selected_menu_item == MASTER_SET) {
       change_scene((int) MASTER_SET);
     } else {
       inside_menu_item = 0;
@@ -131,12 +129,12 @@ bool menu_input_handle(){
 
   int rotary_num = get_rotary();
 
-  if(rotary_num > 0){
+  if (rotary_num > 0) {
     selected_menu_item ++;
     changed = true;
   }
 
-  if(rotary_num < 0){
+  if (rotary_num < 0) {
     selected_menu_item += num_items;
     selected_menu_item --;
     changed = true;
@@ -153,47 +151,47 @@ bool menu_input_handle(){
 
 
 
-void master_set_handler(){
+void master_set_handler() {
 
-int value_got = master_set_input_handle();
-if((value_got != 0 || first_time)  && current_scene == (int) MASTER_SET){
+  int value_got = master_set_input_handle();
+  if ((value_got != 0 || first_time)  && current_scene == (int) MASTER_SET) {
     setCpuFrequencyMhz(240);
-  if(first_time){
-    blackout_screen();
+    if (first_time) {
+      blackout_screen();
+    }
+
+    first_time = false;
+    master_value += value_got;
+
+    if (master_value > 100) {
+      master_value = 100;
+    }
+
+    if (master_value < 0) {
+      master_value = 0;
+    }
+
+    set_changing_parameters(true);
+
+    draw_master(master_value);
+
+    send_master(master_value);
+
   }
 
-  first_time = false;
-  master_value += value_got;
 
-  if(master_value > 100){
-    master_value = 100;
-  }
 
-  if(master_value < 0){
-    master_value = 0;
-  }
 
-  changing_parameters = true;
-
-  draw_master(master_value);
-
-  send_master(master_value);
 
 }
 
 
 
-
-
-}
-
-
-
-int master_set_input_handle(){
+int master_set_input_handle() {
 
   bool changed = false;
 
-  if(check_switch()){
+  if (check_switch()) {
     change_scene((int) MENU);
     return 0;
   }
@@ -208,15 +206,15 @@ int master_set_input_handle(){
 
 
 
-void handle_menu_item(){
+void handle_menu_item() {
 
   bool sw = check_switch();
   int rot = get_rotary();
 
 
-  if(sw || rot != 0 || first_time){
-      setCpuFrequencyMhz(240);
-    if(first_time){
+  if (sw || rot != 0 || first_time) {
+    setCpuFrequencyMhz(240);
+    if (first_time) {
       blackout_screen();
       rot = 1;
       first_time = false;
@@ -230,38 +228,38 @@ void handle_menu_item(){
 }
 
 
-void handle_RGB(int rot, bool sw){
+void handle_RGB(int rot, bool sw) {
   Serial.println("v RGB sem hjo");
-  if(rot != 0 || sw){
+  if (rot != 0 || sw) {
     Serial.println("v RGB sem hsdjo");
 
-    if(inside_menu_item == 0 && sw){
+    if (inside_menu_item == 0 && sw) {
       change_scene((int) MENU);
       return;
     }
 
-    if(sw){
+    if (sw) {
       bool kop = !selecting_menu_item;
       selecting_menu_item = kop;
     }
-    changing_parameters = selecting_menu_item;
+    set_changing_parameters(selecting_menu_item);
 
     Serial.println(sw);
 
-    if(rot != 0 && inside_menu_item > 0 && inside_menu_item < 5 && selecting_menu_item){
+    if (rot != 0 && inside_menu_item > 0 && inside_menu_item < 5 && selecting_menu_item) {
       rgb_data[inside_menu_item - 1] += rot;
 
-      if(rgb_data[inside_menu_item - 1] > 255){
+      if (rgb_data[inside_menu_item - 1] > 255) {
         rgb_data[inside_menu_item - 1] = 255;
       }
 
-      if(rgb_data[inside_menu_item - 1] < 0){
+      if (rgb_data[inside_menu_item - 1] < 0) {
         rgb_data[inside_menu_item - 1] = 0;
       }
 
     }
 
-    if(!selecting_menu_item && rot != 0){
+    if (!selecting_menu_item && rot != 0) {
       inside_menu_item += rot;
       inside_menu_item += 4;
       inside_menu_item %= 4;
@@ -275,19 +273,19 @@ void handle_RGB(int rot, bool sw){
     int max = 0;
     float fact = 0.0;
 
-    for(int i = 0; i<3; i++){
-      if(rgb_data[i] > max){
+    for (int i = 0; i < 3; i++) {
+      if (rgb_data[i] > max) {
         max = rgb_data[i];
       }
     }
 
     fact = (float) 255.0 / (float) max;
 
-    for(int i = 0; i<3; i++){
+    for (int i = 0; i < 3; i++) {
       rgb_data_to_send[i] = (int)((float)rgb_data[i] * fact);
     }
 
-    master_value = (int)floor(((float)max / 255.0)*100.0);
+    master_value = (int)floor(((float)max / 255.0) * 100.0);
 
     Serial.println(master_value);
     send_other((int) RGB_MODE, rgb_data_to_send, 3);
@@ -300,156 +298,156 @@ void handle_RGB(int rot, bool sw){
 
 
 
-void handle_fire(int rot, bool sw){
+void handle_fire(int rot, bool sw) {
 
 
   Serial.println("v fireplace sem hjo");
-  if(rot != 0 || sw){
+  if (rot != 0 || sw) {
     Serial.println("v fireplace sem hsdjo");
 
-    if(inside_menu_item == 0 && sw){
+    if (inside_menu_item == 0 && sw) {
       change_scene((int) MENU);
       return;
     }
 
-    if(sw){
+    if (sw) {
       bool kop = !selecting_menu_item;
       selecting_menu_item = kop;
     }
 
     Serial.println(sw);
-    changing_parameters = selecting_menu_item;
+    set_changing_parameters(selecting_menu_item);
 
-    if(rot != 0 && inside_menu_item > 0 && inside_menu_item < 4 && selecting_menu_item){
+    if (rot != 0 && inside_menu_item > 0 && inside_menu_item < 4 && selecting_menu_item) {
       fire_data[inside_menu_item - 1] += rot;
 
-      if(fire_data[inside_menu_item - 1] > 100){
+      if (fire_data[inside_menu_item - 1] > 100) {
         fire_data[inside_menu_item - 1] = 100;
       }
 
-      if(fire_data[inside_menu_item - 1] < 0){
+      if (fire_data[inside_menu_item - 1] < 0) {
         fire_data[inside_menu_item - 1] = 0;
       }
 
     }
 
-    if(!selecting_menu_item && rot != 0){
+    if (!selecting_menu_item && rot != 0) {
       inside_menu_item += rot;
       inside_menu_item += 3;
       inside_menu_item %= 3;
     }
 
-      draw_fireplace(fire_data[0], fire_data[1], inside_menu_item, selecting_menu_item);
-      send_other((int) FIRE_MODE, fire_data, 2);
-      master_value = 50;
-      send_master(master_value);
+    draw_fireplace(fire_data[0], fire_data[1], inside_menu_item, selecting_menu_item);
+    send_other((int) FIRE_MODE, fire_data, 2);
+    master_value = 50;
+    send_master(master_value);
   }
 
 
 }
 
 
-void handle_stars(int rot, bool sw){
+void handle_stars(int rot, bool sw) {
 
 
   Serial.println("v stars sem hjo");
-  if(rot != 0 || sw){
+  if (rot != 0 || sw) {
     Serial.println("v fireplace sem hsdjo");
 
-    if(inside_menu_item == 0 && sw){
+    if (inside_menu_item == 0 && sw) {
       change_scene((int) MENU);
       return;
     }
 
-    if(sw){
+    if (sw) {
       bool kop = !selecting_menu_item;
       selecting_menu_item = kop;
     }
 
     Serial.println(sw);
-    changing_parameters = selecting_menu_item;
+    set_changing_parameters(selecting_menu_item);
 
-    if(rot != 0 && inside_menu_item > 0 && inside_menu_item < 4 && selecting_menu_item){
+    if (rot != 0 && inside_menu_item > 0 && inside_menu_item < 4 && selecting_menu_item) {
       stars_data[inside_menu_item - 1] += rot;
 
-      if(  stars_data[inside_menu_item - 1] > 100){
-          stars_data[inside_menu_item - 1] = 100;
+      if (  stars_data[inside_menu_item - 1] > 100) {
+        stars_data[inside_menu_item - 1] = 100;
       }
 
-      if(  stars_data[inside_menu_item - 1] < 0){
-          stars_data[inside_menu_item - 1] = 0;
+      if (  stars_data[inside_menu_item - 1] < 0) {
+        stars_data[inside_menu_item - 1] = 0;
       }
     }
 
-    if(!selecting_menu_item && rot != 0){
+    if (!selecting_menu_item && rot != 0) {
       inside_menu_item += rot;
       inside_menu_item += 3;
       inside_menu_item %= 3;
     }
 
-      draw_starrynight(stars_data[0], stars_data[1], inside_menu_item, selecting_menu_item);
-      send_other((int) STARS_MODE, stars_data, 2);
-      master_value = 50;
-      send_master(master_value);
+    draw_starrynight(stars_data[0], stars_data[1], inside_menu_item, selecting_menu_item);
+    send_other((int) STARS_MODE, stars_data, 2);
+    master_value = 50;
+    send_master(master_value);
   }
 
 
 }
 
-void handle_sunset(int rot, bool sw){
+void handle_sunset(int rot, bool sw) {
 
   Serial.println("v sunset sem hjo");
-  if(rot != 0 || sw){
+  if (rot != 0 || sw) {
     Serial.println("v sunset sem hsdjo");
 
-    if(inside_menu_item == 0 && sw){
+    if (inside_menu_item == 0 && sw) {
       change_scene((int) MENU);
       return;
     }
 
-    if(sw){
+    if (sw) {
       bool kop = !selecting_menu_item;
       selecting_menu_item = kop;
     }
-    changing_parameters = selecting_menu_item;
+    set_changing_parameters(selecting_menu_item);
 
     Serial.println(sw);
 
-    if(rot != 0 && inside_menu_item > 0 && inside_menu_item < 4 && selecting_menu_item){
+    if (rot != 0 && inside_menu_item > 0 && inside_menu_item < 4 && selecting_menu_item) {
       sunset_data[inside_menu_item - 1] += rot;
 
-      if(fire_data[inside_menu_item - 1] > 100){
+      if (fire_data[inside_menu_item - 1] > 100) {
         sunset_data[inside_menu_item - 1] = 100;
       }
 
-      if(fire_data[inside_menu_item - 1] < 0){
+      if (fire_data[inside_menu_item - 1] < 0) {
         sunset_data[inside_menu_item - 1] = 0;
       }
     }
 
-    if(!selecting_menu_item && rot != 0){
+    if (!selecting_menu_item && rot != 0) {
       inside_menu_item += rot;
       inside_menu_item += 3;
       inside_menu_item %= 3;
     }
 
-      draw_sunset(sunset_data[0], sunset_data[1], inside_menu_item, selecting_menu_item);
-      send_other((int) SUNSET_MODE, sunset_data, 2);
-      master_value = 50;
-      send_master(master_value);
+    draw_sunset(sunset_data[0], sunset_data[1], inside_menu_item, selecting_menu_item);
+    send_other((int) SUNSET_MODE, sunset_data, 2);
+    master_value = 50;
+    send_master(master_value);
   }
 
 
 }
 
 
-void handle_kelvins(int rot, bool sw){
+void handle_kelvins(int rot, bool sw) {
 
   Serial.println("v sunset sem hjo");
-  if(rot != 0 || sw){
+  if (rot != 0 || sw) {
     Serial.println("v sunset sem hsdjo");
 
-    if(sw){
+    if (sw) {
       change_scene((int) MENU);
       return;
     }
@@ -457,22 +455,22 @@ void handle_kelvins(int rot, bool sw){
 
 
     Serial.println(sw);
-    changing_parameters = true;
+    set_changing_parameters(true);
 
     kelvins += rot;
 
-    if(kelvins < 20){
+    if (kelvins < 20) {
       kelvins = 20;
     }
 
-    if(kelvins > 60){
+    if (kelvins > 60) {
       kelvins = 60;
     }
 
-      draw_kelvins(kelvins);
-      send_other((int) TEMPERATURE_MODE, &kelvins, 1);
-      master_value = 50;
-      send_master(master_value);
+    draw_kelvins(kelvins);
+    send_other((int) TEMPERATURE_MODE, &kelvins, 1);
+    master_value = 50;
+    send_master(master_value);
   }
 
 
@@ -480,24 +478,24 @@ void handle_kelvins(int rot, bool sw){
 
 
 
-void handle_turbo(int rot, bool sw){
+void handle_turbo(int rot, bool sw) {
 
   int fake = 0;
   Serial.println("v sunset sem hjo");
-  if(rot != 0 || sw){
+  if (rot != 0 || sw) {
     Serial.println("v sunset sem hsdjo");
 
-    if(sw){
+    if (sw) {
       change_scene((int) MENU);
       return;
     }
 
-      changing_parameters = true;
-      Serial.println(sw);
-      draw_turbo();
-      send_other((int) TURBO_MODE, &fake, 0);
-      master_value = 50;
-      send_master(master_value);
+    set_changing_parameters(true);
+    Serial.println(sw);
+    draw_turbo();
+    send_other((int) TURBO_MODE, &fake, 0);
+    master_value = 50;
+    send_master(master_value);
   }
 
 
@@ -506,14 +504,6 @@ void handle_turbo(int rot, bool sw){
 
 
 
-void handle_ota(int rot, bool sw){
+void handle_ota(int rot, bool sw) {
   change_scene((int) MENU);
 }
-
-
-
-
-bool get_changing_parameters(){
-  return changing_parameters;
-  
-  }

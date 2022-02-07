@@ -5,6 +5,12 @@
 #include "global_defines.h"
 
 
+bool changing_parameters = false;
+void set_changing_parameters(bool set_val) {
+    changing_parameters = set_val;
+}
+
+
 bool switch_pressed = false;
 int rotary_turned = 0;
 
@@ -37,7 +43,7 @@ void IRAM_ATTR isr_rotary() {
 
 
   int rot_delay = 20;
-  if (!get_changing_parameters()) {
+  if (!changing_parameters) {
     rot_delay = 333;
   }
   if (millis() - prev_rotary > rot_delay) {
