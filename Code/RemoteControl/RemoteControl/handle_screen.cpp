@@ -9,8 +9,8 @@ TFT_eSPI tft = TFT_eSPI(135, 240);
 bool inited = false;
 
 
-void init_screen(){
-  if(!inited){
+void init_screen() {
+  if (!inited) {
     tft.init();
     tft.setRotation(2);
     tft.fillScreen(TFT_BLACK);
@@ -37,11 +37,11 @@ void turn_on_screen() {
 
 
 
-void draw_splash(){
+void draw_splash() {
   init_screen();
 }
 
-void draw_menu(String names[], int num, int selected, int battery_percentage){
+void draw_menu(String names[], int num, int selected, int battery_percentage) {
   init_screen();
 
   tft.setRotation(2);
@@ -51,17 +51,17 @@ void draw_menu(String names[], int num, int selected, int battery_percentage){
   tft.setTextSize(2);
 
 
-  for(int i = 0; i< num; i++){
-      tft.drawString(names[i], 4, (i * 23) + 10);
-      int w = tft.textWidth(names[i]) + 4;
-      int h = tft.fontHeight() + 4;
-      tft.drawRect(0, (i * 23) + 8, w, h, tft.color24to16((uint32_t)0x000));
+  for (int i = 0; i < num; i++) {
+    tft.drawString(names[i], 4, (i * 23) + 10);
+    int w = tft.textWidth(names[i]) + 4;
+    int h = tft.fontHeight() + 4;
+    tft.drawRect(0, (i * 23) + 8, w, h, tft.color24to16((uint32_t)0x000));
   }
 
   int w = tft.textWidth(names[selected]) + 4;
   int h = tft.fontHeight() + 4;
 
-  tft.drawRect(0, (selected * 23) + 8, w, h, tft.color24to16((uint32_t)0x00CCCCCC));
+  tft.drawRect(0, (selected * 23) + 8, w, h, tft.color24to16((uint32_t)0x00FFAACC));
 
 
 
@@ -71,7 +71,7 @@ void draw_menu(String names[], int num, int selected, int battery_percentage){
 
 }
 
-void draw_master(int value){
+void draw_master(int value) {
   init_screen();
 
 
@@ -84,13 +84,13 @@ void draw_master(int value){
   int h = 20;
   int w = 135;
   tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00FFFFFF));
-  tft.fillRect(1, 101, map(value, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x00AAAAAA));
+  tft.fillRect(1, 101, map(value, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x0088AAFF));
   tft.fillRect(map(value, 0, 100, 0, 134) + 1, 101, 133 - map(value, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x0000));
 
 
 }
 
-void draw_RGB(int r, int g, int b, int selected, bool changing){
+void draw_RGB(int r, int g, int b, int selected, bool changing) {
   init_screen();
 
   tft.setRotation(2);
@@ -103,17 +103,17 @@ void draw_RGB(int r, int g, int b, int selected, bool changing){
 
 
 
-    int w = tft.textWidth("Back") + 4;
-    int h = tft.fontHeight() + 4;
-  if(selected == 0){
-    tft.drawRect(2, 2, w, h, tft.color24to16((uint32_t)0x00CCCCCC));
+  int w = tft.textWidth("Back") + 4;
+  int h = tft.fontHeight() + 4;
+  if (selected == 0) {
+    tft.drawRect(2, 2, w, h, tft.color24to16((uint32_t)0x00FFAACC));
   } else {
     tft.drawRect(2, 2, w, h, tft.color24to16((uint32_t)0x00000));
   }
 
   tft.setTextSize(1);
 
-  String colors = "("+String(r)+", "+String(g) + ", " + String(b) + ")";
+  String colors = "(" + String(r) + ", " + String(g) + ", " + String(b) + ")";
 
   tft.drawString(colors, 4, 220);
 
@@ -132,11 +132,11 @@ void draw_RGB(int r, int g, int b, int selected, bool changing){
   col_inv += (255 - r) * 256 * 256;
 
   Serial.println(col);
-  tft.drawRect(68-26, 34, 52, 52, tft.color24to16((uint32_t)col_inv));
-  tft.fillRect(68-25, 35, 50, 50, tft.color24to16((uint32_t)col));
+  tft.drawRect(68 - 26, 34, 52, 52, tft.color24to16((uint32_t)col_inv));
+  tft.fillRect(68 - 25, 35, 50, 50, tft.color24to16((uint32_t)col));
 
 
-  for(int i = 0; i<135; i++){
+  for (int i = 0; i < 135; i++) {
     int mapped = map(i, 0, 134, 0, 255);
 
     uint32_t col = 0;
@@ -149,7 +149,7 @@ void draw_RGB(int r, int g, int b, int selected, bool changing){
 
     /*for(int j = 0; j < 21; j++){
       tft.drawPixel(i, 90 + j, tft.color24to16((uint32_t)col));
-    }*/
+      }*/
 
 
     col = 0;
@@ -162,7 +162,7 @@ void draw_RGB(int r, int g, int b, int selected, bool changing){
 
     /*for(int j = 0; j < 21; j++){
       tft.drawPixel(i, 130 + j, tft.color24to16((uint32_t)col));
-    }*/
+      }*/
 
     col = 0;
 
@@ -174,7 +174,7 @@ void draw_RGB(int r, int g, int b, int selected, bool changing){
 
     /*for(int j = 0; j < 21; j++){
       tft.drawPixel(i, 170 + j, tft.color24to16((uint32_t)col));
-    }*/
+      }*/
 
 
   }
@@ -186,283 +186,283 @@ void draw_RGB(int r, int g, int b, int selected, bool changing){
   tft.drawLine(mapped_g, 145, mapped_g, 150, tft.color24to16((uint32_t)0xFFFFFF));
   tft.drawLine(mapped_b, 185, mapped_b, 190, tft.color24to16((uint32_t)0xFFFFFF));
 
-            for(int j = 0; j<5; j++){
+  for (int j = 0; j < 5; j++) {
 
-  tft.drawLine(0, 112 +j, 134, 112 +j, tft.color24to16((uint32_t)0x00000));
+    tft.drawLine(0, 112 + j, 134, 112 + j, tft.color24to16((uint32_t)0x00000));
 
-  tft.drawLine(0, 152 +j, 134, 152 +j, tft.color24to16((uint32_t)0x00000));
+    tft.drawLine(0, 152 + j, 134, 152 + j, tft.color24to16((uint32_t)0x00000));
 
-  tft.drawLine(0, 192 +j, 134, 192 +j, tft.color24to16((uint32_t)0x00000));
-}
+    tft.drawLine(0, 192 + j, 134, 192 + j, tft.color24to16((uint32_t)0x00000));
+  }
 
-  if(selected == 1){
-    for(int j = 0; j<5; j++){
-    if(changing){
-      tft.drawLine(0, 112 +j, 134, 112 +j, tft.color24to16((uint32_t)0x00CCCCCC));
-    } else {
-      tft.drawLine(0, 112 +j, 134, 112 +j, tft.color24to16((uint32_t)0x00666666));
+  if (selected == 1) {
+    for (int j = 0; j < 5; j++) {
+      if (changing) {
+        tft.drawLine(0, 112 + j, 134, 112 + j, tft.color24to16((uint32_t)0x00FFAACC));
+      } else {
+        tft.drawLine(0, 112 + j, 134, 112 + j, tft.color24to16((uint32_t)0x00666666));
+      }
     }
   }
-  }
 
-  if(selected == 2){
-        for(int j = 0; j<5; j++){
-    if(changing){
-      tft.drawLine(0, 152 +j, 134, 152 +j, tft.color24to16((uint32_t)0x00CCCCCC));
-    } else {
-      tft.drawLine(0, 152 +j, 134, 152 +j, tft.color24to16((uint32_t)0x00666666));
+  if (selected == 2) {
+    for (int j = 0; j < 5; j++) {
+      if (changing) {
+        tft.drawLine(0, 152 + j, 134, 152 + j, tft.color24to16((uint32_t)0x00FFAACC));
+      } else {
+        tft.drawLine(0, 152 + j, 134, 152 + j, tft.color24to16((uint32_t)0x00666666));
+      }
     }
   }
-  }
 
-  if(selected == 3){
-            for(int j = 0; j<5; j++){
-    if(changing){
-      tft.drawLine(0, 192 +j, 134, 192 +j, tft.color24to16((uint32_t)0x00CCCCCC));
-    } else {
-      tft.drawLine(0, 192 +j, 134, 192 +j, tft.color24to16((uint32_t)0x00666666));
+  if (selected == 3) {
+    for (int j = 0; j < 5; j++) {
+      if (changing) {
+        tft.drawLine(0, 192 + j, 134, 192 + j, tft.color24to16((uint32_t)0x00FFAACC));
+      } else {
+        tft.drawLine(0, 192 + j, 134, 192 + j, tft.color24to16((uint32_t)0x00666666));
+      }
     }
   }
-}
 
 }
 
-void draw_fireplace(int param1, int param2, int selected, bool changing){
+void draw_fireplace(int param1, int param2, int selected, bool changing) {
   init_screen();
 
 
-    tft.setRotation(2);
-    //tft.fillScreen(TFT_BLACK);
-    tft.setCursor(0, 0);
-    tft.setTextDatum(TL_DATUM);
+  tft.setRotation(2);
+  //tft.fillScreen(TFT_BLACK);
+  tft.setCursor(0, 0);
+  tft.setTextDatum(TL_DATUM);
 
 
 
-    tft.setTextSize(2);
+  tft.setTextSize(2);
 
-    tft.drawString("Back", 4, 4);
+  tft.drawString("Back", 4, 4);
 
-    tft.drawString("FIREPLACE", 4, 35);
+  tft.drawString("FIREPLACE", 4, 35);
 
 
-      int w = tft.textWidth("Back") + 4;
-      int h = tft.fontHeight() + 4;
-    if(selected == 0){
-      tft.drawRect(2, 2, w, h, tft.color24to16((uint32_t)0x00CCCCCC));
+  int w = tft.textWidth("Back") + 4;
+  int h = tft.fontHeight() + 4;
+  if (selected == 0) {
+    tft.drawRect(2, 2, w, h, tft.color24to16((uint32_t)0x00FFAACC));
+  } else {
+    tft.drawRect(2, 2, w, h, tft.color24to16((uint32_t)0x00000));
+  }
+
+
+  h = 20;
+  w = 135;
+
+  tft.drawString("Intensity", 4, 77);
+  tft.drawString("Phase", 4, 150 - 23);
+
+  tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00111111));
+  tft.drawRect(0, 99, w + 2, h, tft.color24to16((uint32_t)0x00111111));
+  tft.fillRect(1, 101, map(param1, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x0088AAFF));
+  tft.fillRect(map(param1, 0, 100, 0, 134) + 1, 101, 133 - map(param1, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x0000));
+
+
+  tft.drawRect(0, 160, w, h, tft.color24to16((uint32_t)0x00111111));
+  tft.drawRect(0, 159, w + 2, h, tft.color24to16((uint32_t)0x00111111));
+  tft.fillRect(1, 161, map(param2, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x0088AAFF));
+  tft.fillRect(map(param2, 0, 100, 0, 134) + 1, 161, 133 - map(param2, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x0000));
+
+  if (selected == 1) {
+    if (changing) {
+      tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00FFAACC));
+      tft.drawRect(0, 99, w + 2, h, tft.color24to16((uint32_t)0x00FFAACC));
     } else {
-      tft.drawRect(2, 2, w, h, tft.color24to16((uint32_t)0x00000));
+      tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00666666));
+      tft.drawRect(0, 99, w + 2, h, tft.color24to16((uint32_t)0x00666666));
     }
 
+  }
 
-    h = 20;
-    w = 135;
-
-    tft.drawString("Intensity", 4, 77);
-    tft.drawString("Phase", 4, 150 - 23);
-
-    tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00444444));
-    tft.drawRect(0, 99, w+2, h, tft.color24to16((uint32_t)0x00444444));
-    tft.fillRect(1, 101, map(param1, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x00AAAAAA));
-    tft.fillRect(map(param1, 0, 100, 0, 134) + 1, 101, 133 - map(param1, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x0000));
-
-
-    tft.drawRect(0, 160, w, h, tft.color24to16((uint32_t)0x00444444));
-    tft.drawRect(0, 159, w+2, h, tft.color24to16((uint32_t)0x00444444));
-    tft.fillRect(1, 161, map(param2, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x00AAAAAA));
-    tft.fillRect(map(param2, 0, 100, 0, 134) + 1, 161, 133 - map(param2, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x0000));
-
-    if(selected == 1){
-      if(changing){
-        tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00CCCCCC));
-        tft.drawRect(0, 99, w+2, h, tft.color24to16((uint32_t)0x00CCCCCC));
-      } else {
-          tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00666666));
-          tft.drawRect(0, 99, w+2, h, tft.color24to16((uint32_t)0x00666666));
-      }
-
+  if (selected == 2) {
+    if (changing) {
+      tft.drawRect(0, 160, w, h, tft.color24to16((uint32_t)0x00FFAACC));
+      tft.drawRect(0, 159, w + 2, h, tft.color24to16((uint32_t)0x00FFAACC));
+    } else {
+      tft.drawRect(0, 160, w, h, tft.color24to16((uint32_t)0x00666666));
+      tft.drawRect(0, 159, w + 2, h, tft.color24to16((uint32_t)0x00666666));
     }
 
-    if(selected == 2){
-      if(changing){
-        tft.drawRect(0, 160, w, h, tft.color24to16((uint32_t)0x00CCCCCC));
-        tft.drawRect(0, 159, w+2, h, tft.color24to16((uint32_t)0x00CCCCCC));
-      } else {
-          tft.drawRect(0, 160, w, h, tft.color24to16((uint32_t)0x00666666));
-          tft.drawRect(0, 159, w+2, h, tft.color24to16((uint32_t)0x00666666));
-      }
-
-    }
+  }
 
 }
 
-void draw_sunset(int param1, int param2, int selected, bool changing){
-  init_screen();
-
-
-
-
-      tft.setRotation(2);
-      //tft.fillScreen(TFT_BLACK);
-      tft.setCursor(0, 0);
-      tft.setTextDatum(TL_DATUM);
-
-
-
-      tft.setTextSize(2);
-
-      tft.drawString("Back", 4, 4);
-
-      tft.drawString("SUNSET", 4, 35);
-
-
-        int w = tft.textWidth("Back") + 4;
-        int h = tft.fontHeight() + 4;
-      if(selected == 0){
-        tft.drawRect(2, 2, w, h, tft.color24to16((uint32_t)0x00CCCCCC));
-      } else {
-        tft.drawRect(2, 2, w, h, tft.color24to16((uint32_t)0x00000));
-      }
-
-
-      h = 20;
-      w = 135;
-
-      tft.drawString("Time delay", 4, 77);
-      tft.drawString("Phase", 4, 150 - 23);
-
-      tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00444444));
-      tft.drawRect(0, 99, w+2, h, tft.color24to16((uint32_t)0x00444444));
-      tft.drawString(String(param1) + " min", 4, 101);
-
-      tft.drawRect(0, 160, w, h, tft.color24to16((uint32_t)0x00444444));
-      tft.drawRect(0, 159, w+2, h, tft.color24to16((uint32_t)0x00444444));
-      tft.fillRect(1, 161, map(param2, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x00AAAAAA));
-      tft.fillRect(map(param2, 0, 100, 0, 134) + 1, 161, 133 - map(param2, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x0000));
-
-      if(selected == 1){
-        if(changing){
-          tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00CCCCCC));
-          tft.drawRect(0, 99, w+2, h, tft.color24to16((uint32_t)0x00CCCCCC));
-        } else {
-            tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00666666));
-            tft.drawRect(0, 99, w+2, h, tft.color24to16((uint32_t)0x00666666));
-        }
-
-      }
-
-      if(selected == 2){
-        if(changing){
-          tft.drawRect(0, 160, w, h, tft.color24to16((uint32_t)0x00CCCCCC));
-          tft.drawRect(0, 159, w+2, h, tft.color24to16((uint32_t)0x00CCCCCC));
-        } else {
-            tft.drawRect(0, 160, w, h, tft.color24to16((uint32_t)0x00666666));
-            tft.drawRect(0, 159, w+2, h, tft.color24to16((uint32_t)0x00666666));
-        }
-
-      }
-
-
-
-
-
-}
-
-void draw_starrynight(int param1, int param2, int selected, bool changing){
+void draw_sunset(int param1, int param2, int selected, bool changing) {
   init_screen();
 
 
 
 
-      tft.setRotation(2);
-      //tft.fillScreen(TFT_BLACK);
-      tft.setCursor(0, 0);
-      tft.setTextDatum(TL_DATUM);
+  tft.setRotation(2);
+  //tft.fillScreen(TFT_BLACK);
+  tft.setCursor(0, 0);
+  tft.setTextDatum(TL_DATUM);
 
 
 
-      tft.setTextSize(2);
+  tft.setTextSize(2);
 
-      tft.drawString("Back", 4, 4);
+  tft.drawString("Back", 4, 4);
 
-      tft.drawString("STARS ", 4, 35);
-
-
-        int w = tft.textWidth("Back") + 4;
-        int h = tft.fontHeight() + 4;
-      if(selected == 0){
-        tft.drawRect(2, 2, w, h, tft.color24to16((uint32_t)0x00CCCCCC));
-      } else {
-        tft.drawRect(2, 2, w, h, tft.color24to16((uint32_t)0x00000));
-      }
+  tft.drawString("SUNSET", 4, 35);
 
 
-      h = 20;
-      w = 135;
-
-      tft.drawString("Density", 4, 77);
-      tft.drawString("Size", 4, 150 - 23);
-
-      tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00444444));
-      tft.drawRect(0, 99, w+2, h, tft.color24to16((uint32_t)0x00444444));
-      tft.fillRect(1, 101, map(param1, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x00AAAAAA));
-      tft.fillRect(map(param1, 0, 100, 0, 134) + 1, 101, 133 - map(param1, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x0000));
+  int w = tft.textWidth("Back") + 4;
+  int h = tft.fontHeight() + 4;
+  if (selected == 0) {
+    tft.drawRect(2, 2, w, h, tft.color24to16((uint32_t)0x00FFAACC));
+  } else {
+    tft.drawRect(2, 2, w, h, tft.color24to16((uint32_t)0x00000));
+  }
 
 
-      tft.drawRect(0, 160, w, h, tft.color24to16((uint32_t)0x00444444));
-      tft.drawRect(0, 159, w+2, h, tft.color24to16((uint32_t)0x00444444));
-      tft.fillRect(1, 161, map(param2, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x00AAAAAA));
-      tft.fillRect(map(param2, 0, 100, 0, 134) + 1, 161, 133 - map(param2, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x0000));
+  h = 20;
+  w = 135;
 
-      if(selected == 1){
-        if(changing){
-          tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00CCCCCC));
-          tft.drawRect(0, 99, w+2, h, tft.color24to16((uint32_t)0x00CCCCCC));
-        } else {
-            tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00666666));
-            tft.drawRect(0, 99, w+2, h, tft.color24to16((uint32_t)0x00666666));
-        }
+  tft.drawString("Time delay", 4, 77);
+  tft.drawString("Phase", 4, 150 - 23);
 
-      }
+  tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00111111));
+  tft.drawRect(0, 99, w + 2, h, tft.color24to16((uint32_t)0x00111111));
+  tft.drawString(String(param1) + " min", 4, 101);
 
-      if(selected == 2){
-        if(changing){
-          tft.drawRect(0, 160, w, h, tft.color24to16((uint32_t)0x00CCCCCC));
-          tft.drawRect(0, 159, w+2, h, tft.color24to16((uint32_t)0x00CCCCCC));
-        } else {
-            tft.drawRect(0, 160, w, h, tft.color24to16((uint32_t)0x00666666));
-            tft.drawRect(0, 159, w+2, h, tft.color24to16((uint32_t)0x00666666));
-        }
+  tft.drawRect(0, 160, w, h, tft.color24to16((uint32_t)0x00111111));
+  tft.drawRect(0, 159, w + 2, h, tft.color24to16((uint32_t)0x00111111));
+  tft.fillRect(1, 161, map(param2, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x0088AAFF));
+  tft.fillRect(map(param2, 0, 100, 0, 134) + 1, 161, 133 - map(param2, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x0000));
 
-      }
+  if (selected == 1) {
+    if (changing) {
+      tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00FFAACC));
+      tft.drawRect(0, 99, w + 2, h, tft.color24to16((uint32_t)0x00FFAACC));
+    } else {
+      tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00666666));
+      tft.drawRect(0, 99, w + 2, h, tft.color24to16((uint32_t)0x00666666));
+    }
+
+  }
+
+  if (selected == 2) {
+    if (changing) {
+      tft.drawRect(0, 160, w, h, tft.color24to16((uint32_t)0x00FFAACC));
+      tft.drawRect(0, 159, w + 2, h, tft.color24to16((uint32_t)0x00FFAACC));
+    } else {
+      tft.drawRect(0, 160, w, h, tft.color24to16((uint32_t)0x00666666));
+      tft.drawRect(0, 159, w + 2, h, tft.color24to16((uint32_t)0x00666666));
+    }
+
+  }
+
+
+
+
+
+}
+
+void draw_starrynight(int param1, int param2, int selected, bool changing) {
+  init_screen();
+
+
+
+
+  tft.setRotation(2);
+  //tft.fillScreen(TFT_BLACK);
+  tft.setCursor(0, 0);
+  tft.setTextDatum(TL_DATUM);
+
+
+
+  tft.setTextSize(2);
+
+  tft.drawString("Back", 4, 4);
+
+  tft.drawString("STARS ", 4, 35);
+
+
+  int w = tft.textWidth("Back") + 4;
+  int h = tft.fontHeight() + 4;
+  if (selected == 0) {
+    tft.drawRect(2, 2, w, h, tft.color24to16((uint32_t)0x00FFAACC));
+  } else {
+    tft.drawRect(2, 2, w, h, tft.color24to16((uint32_t)0x00000));
+  }
+
+
+  h = 20;
+  w = 135;
+
+  tft.drawString("Density", 4, 77);
+  tft.drawString("Size", 4, 150 - 23);
+
+  tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00111111));
+  tft.drawRect(0, 99, w + 2, h, tft.color24to16((uint32_t)0x00111111));
+  tft.fillRect(1, 101, map(param1, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x0088AAFF));
+  tft.fillRect(map(param1, 0, 100, 0, 134) + 1, 101, 133 - map(param1, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x0000));
+
+
+  tft.drawRect(0, 160, w, h, tft.color24to16((uint32_t)0x00111111));
+  tft.drawRect(0, 159, w + 2, h, tft.color24to16((uint32_t)0x00111111));
+  tft.fillRect(1, 161, map(param2, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x0088AAFF));
+  tft.fillRect(map(param2, 0, 100, 0, 134) + 1, 161, 133 - map(param2, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x0000));
+
+  if (selected == 1) {
+    if (changing) {
+      tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00FFAACC));
+      tft.drawRect(0, 99, w + 2, h, tft.color24to16((uint32_t)0x00FFAACC));
+    } else {
+      tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00666666));
+      tft.drawRect(0, 99, w + 2, h, tft.color24to16((uint32_t)0x00666666));
+    }
+
+  }
+
+  if (selected == 2) {
+    if (changing) {
+      tft.drawRect(0, 160, w, h, tft.color24to16((uint32_t)0x00FFAACC));
+      tft.drawRect(0, 159, w + 2, h, tft.color24to16((uint32_t)0x00FFAACC));
+    } else {
+      tft.drawRect(0, 160, w, h, tft.color24to16((uint32_t)0x00666666));
+      tft.drawRect(0, 159, w + 2, h, tft.color24to16((uint32_t)0x00666666));
+    }
+
+  }
 
 
 }
 
 
-void draw_turbo(){
+void draw_turbo() {
 
 
-    init_screen();
+  init_screen();
 
 
-    tft.setRotation(2);
-    //tft.fillScreen(TFT_BLACK);
-    tft.setCursor(0, 0);
-    tft.setTextDatum(TL_DATUM);
-    tft.setTextSize(2);
+  tft.setRotation(2);
+  //tft.fillScreen(TFT_BLACK);
+  tft.setCursor(0, 0);
+  tft.setTextDatum(TL_DATUM);
+  tft.setTextSize(2);
 
-      tft.drawString("Back", 4, 4);
+  tft.drawString("Back", 4, 4);
 
-      tft.drawString("TURBO ACTIVE", 4, 50);
+  tft.drawString("TURBO ACTIVE", 4, 50);
 
-      tft.setTextSize(1);
-      tft.drawString("Ne met predolg przgan,", 4, 80);
-      tft.drawString("ker je to turbo in je ", 4, 90);
-      tft.drawString("res sam premocno", 4, 100);
+  tft.setTextSize(1);
+  tft.drawString("Ne met predolg przgan,", 4, 80);
+  tft.drawString("ker je to turbo in je ", 4, 90);
+  tft.drawString("res sam premocno", 4, 100);
 }
 
 
-void draw_kelvins(int kelvins){
+void draw_kelvins(int kelvins) {
 
 
 
@@ -478,7 +478,7 @@ void draw_kelvins(int kelvins){
   int h = 20;
   int w = 135;
   tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00FFFFFF));
-  tft.fillRect(1, 101, map(kelvins, 20, 60, 0, 134), h - 2, tft.color24to16((uint32_t)0x00AAAAAA));
+  tft.fillRect(1, 101, map(kelvins, 20, 60, 0, 134), h - 2, tft.color24to16((uint32_t)0x0088AAFF));
   tft.fillRect(map(kelvins, 20, 60, 0, 134) + 1, 101, 133 - map(kelvins, 20, 60, 0, 134), h - 2, tft.color24to16((uint32_t)0x0000));
 
 
@@ -488,7 +488,7 @@ void draw_kelvins(int kelvins){
 
 }
 
-void draw_OTA(int phase, String data, int perc){
+void draw_OTA(int phase, String data, int perc) {
   init_screen();
   //tft.fillScreen(TFT_BLACK);
   tft.setRotation(2);
@@ -498,14 +498,14 @@ void draw_OTA(int phase, String data, int perc){
   tft.setTextSize(1);
 
   // connecting to wifi
-  if(phase == 0){
-      tft.fillScreen(TFT_BLACK);
-        tft.drawString("Back", 4, 4);
-        tft.drawString("Connecting to WiFi", 4, 105);
-        return;
+  if (phase == 0) {
+    tft.fillScreen(TFT_BLACK);
+    tft.drawString("Back", 4, 4);
+    tft.drawString("Connecting to WiFi", 4, 105);
+    return;
   }
 
-  if(phase == 1){
+  if (phase == 1) {
     tft.fillScreen(TFT_BLACK);
     tft.drawString("Back", 4, 4);
     tft.drawString("Connected to WiFi", 4, 105);
@@ -516,43 +516,43 @@ void draw_OTA(int phase, String data, int perc){
 
   tft.drawString("Back", 4, 4);
 
-  if(phase == 2){
+  if (phase == 2) {
 
-        tft.fillScreen(TFT_BLACK);
-        tft.drawString(data, 0, 105);
-        return;
+    tft.fillScreen(TFT_BLACK);
+    tft.drawString(data, 0, 105);
+    return;
   }
 
-  if(phase == 3){
+  if (phase == 3) {
 
-        tft.drawString(data, 0, 85);
+    tft.drawString(data, 0, 85);
 
-        int h = 20;
-        int w = 135;
-        tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00FFFFFF));
-        tft.fillRect(1, 101, map(perc, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x00AAAAAA));
-        tft.fillRect(map(perc, 0, 100, 0, 134) + 1, 101, 133 - map(perc, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x0000));
+    int h = 20;
+    int w = 135;
+    tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00FFFFFF));
+    tft.fillRect(1, 101, map(perc, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x0088AAFF));
+    tft.fillRect(map(perc, 0, 100, 0, 134) + 1, 101, 133 - map(perc, 0, 100, 0, 134), h - 2, tft.color24to16((uint32_t)0x0000));
 
 
-        return;
+    return;
   }
 
-/*
-  int h = 20;
-  int w = 135;
-  tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00FFFFFF));
-  tft.fillRect(1, 101, map(kelvins, 20, 60, 0, 134), h - 2, tft.color24to16((uint32_t)0x00AAAAAA));
-  tft.fillRect(map(kelvins, 20, 60, 0, 134) + 1, 101, 133 - map(kelvins, 20, 60, 0, 134), h - 2, tft.color24to16((uint32_t)0x0000));
+  /*
+    int h = 20;
+    int w = 135;
+    tft.drawRect(0, 100, w, h, tft.color24to16((uint32_t)0x00FFFFFF));
+    tft.fillRect(1, 101, map(kelvins, 20, 60, 0, 134), h - 2, tft.color24to16((uint32_t)0x0088AAFF));
+    tft.fillRect(map(kelvins, 20, 60, 0, 134) + 1, 101, 133 - map(kelvins, 20, 60, 0, 134), h - 2, tft.color24to16((uint32_t)0x0000));
 
 
-*/
+  */
 
 
 
 }
 
 
-void blackout_screen(){
+void blackout_screen() {
 
   init_screen();
 

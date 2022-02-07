@@ -16,6 +16,8 @@ bool first_time = true;
 
 int master_value = 5;
 
+bool changing_parameters = false;
+
 
 int inside_menu_item = 0;
 bool selecting_menu_item = false;
@@ -85,6 +87,7 @@ void handle_ui(){
 
 void menu_handler(){
   Serial.println("sm v menu");
+  changing_parameters = false;
   if((menu_input_handle() || first_time) && current_scene == (int) MENU){
       setCpuFrequencyMhz(240);
     if(first_time){
@@ -112,6 +115,8 @@ bool menu_input_handle(){
 
   bool changed = false;
 
+  changing_parameters = false;
+
   if(check_switch()){
     if(selected_menu_item == MASTER_SET){
       change_scene((int) MASTER_SET);
@@ -138,6 +143,7 @@ bool menu_input_handle(){
   }
 
   selected_menu_item %= num_items;
+
 
   return changed;
 
@@ -167,6 +173,7 @@ if((value_got != 0 || first_time)  && current_scene == (int) MASTER_SET){
     master_value = 0;
   }
 
+  changing_parameters = true;
 
   draw_master(master_value);
 
@@ -237,6 +244,7 @@ void handle_RGB(int rot, bool sw){
       bool kop = !selecting_menu_item;
       selecting_menu_item = kop;
     }
+    changing_parameters = selecting_menu_item;
 
     Serial.println(sw);
 
@@ -310,6 +318,7 @@ void handle_fire(int rot, bool sw){
     }
 
     Serial.println(sw);
+    changing_parameters = selecting_menu_item;
 
     if(rot != 0 && inside_menu_item > 0 && inside_menu_item < 4 && selecting_menu_item){
       fire_data[inside_menu_item - 1] += rot;
@@ -358,6 +367,7 @@ void handle_stars(int rot, bool sw){
     }
 
     Serial.println(sw);
+    changing_parameters = selecting_menu_item;
 
     if(rot != 0 && inside_menu_item > 0 && inside_menu_item < 4 && selecting_menu_item){
       stars_data[inside_menu_item - 1] += rot;
@@ -401,6 +411,7 @@ void handle_sunset(int rot, bool sw){
       bool kop = !selecting_menu_item;
       selecting_menu_item = kop;
     }
+    changing_parameters = selecting_menu_item;
 
     Serial.println(sw);
 
@@ -446,6 +457,7 @@ void handle_kelvins(int rot, bool sw){
 
 
     Serial.println(sw);
+    changing_parameters = true;
 
     kelvins += rot;
 
@@ -480,6 +492,7 @@ void handle_turbo(int rot, bool sw){
       return;
     }
 
+      changing_parameters = true;
       Serial.println(sw);
       draw_turbo();
       send_other((int) TURBO_MODE, &fake, 0);
@@ -496,3 +509,11 @@ void handle_turbo(int rot, bool sw){
 void handle_ota(int rot, bool sw){
   change_scene((int) MENU);
 }
+
+
+
+
+bool get_changing_parameters(){
+  return changing_parameters;
+  
+  }

@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include "handle_ota.h"
 
-#define PIN        14
+#define PIN        33
 
 #define NUMPIXELS 240
 

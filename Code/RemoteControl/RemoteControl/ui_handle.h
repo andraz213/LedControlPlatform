@@ -16,6 +16,8 @@ typedef struct {
 } menu_item;
 
 
+bool get_changing_parameters();
+
 
 void handle_ui();
 
