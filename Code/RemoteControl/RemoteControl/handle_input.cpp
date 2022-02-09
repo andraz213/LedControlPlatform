@@ -37,7 +37,6 @@ void IRAM_ATTR isr_rotary() {
       rotary_history_dir[dir_pointer][1] = dir;
       dir_pointer++;
       dir_pointer %= 100;
-      Serial.println("yeet");
     }
   }
 
